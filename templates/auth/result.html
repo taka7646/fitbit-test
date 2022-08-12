@@ -1,0 +1,31 @@
+{% extends "layout.tpl" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h3>Fitbit-test server</h3>
+    </div>
+    <div class="col-12">
+        <div>
+            fit認証が完了しました
+        </div>
+        <table class="table table-bordered">
+            <tr>
+                <th>ユーザーID</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>FitbitユーザーID</th>
+                <td>{{ user.fitbit_id }}</td>
+            </tr>
+            <tr>
+                <th>APIキー</th>
+                <td>{{ user.api_key }}</td>
+            </tr>
+        </table>
+        APIでアクセスする場合はAPIキーをHTTPヘッダ「X-API_KEY」に設定してください
+        <a class="btn btn-success" href="/">次へ</a>
+    </div>
+</div>
+{% endblock %}
+

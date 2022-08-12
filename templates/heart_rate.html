@@ -1,0 +1,32 @@
+{% extends "layout.tpl" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        {{ user.fitbit_id }}: 
+    </div>
+    <div class="col-12">
+        <h3>{{ date }}の心拍数</h3>
+        <form class="row" action="/heart-rate" method="get">
+            <div class="col-4">
+                <select class="form-control" name="date">
+                    {% for d in dates %}
+                    <option value="{{ d }}" {% if d == date %}selected{% endif %}>{{ d }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-2">
+                <input class="btn btn-success" type="submit" value="更新">
+            </div>
+        </form>
+        <table class="table table-bordered">
+            {% for d in data_set %}
+            <tr>
+                <td>{{ d['time'] }}</td>
+                <td>{{ d['value'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+<div>
+{% endblock %}
