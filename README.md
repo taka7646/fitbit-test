@@ -10,6 +10,9 @@ fitbitのAPIをproxyするWebアプリのサンプル実装です
 * requests
 * sqlalchemy
 * gunicorn
+```
+pip install -r requiments.txt
+```
 
 ## 初期化
 * 以下を実行してsqliteのデータベースを初期化します

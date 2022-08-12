@@ -30,15 +30,18 @@ with open("./setting.json") as f:
 
 @app.get("/auth", response_class=HTMLResponse)
 def auth(request: Request, age: int = Query(None)):
-    params = setting.copy()
+    params = {
+        'client_id': setting['client_id'],
+        'redirect_uri': setting['redirect_uri'],
+        'scope': setting['scope'],
+        'response_type': setting['response_type'],
+    }
     url = "https://www.fitbit.com/oauth2/authorize?"
     url += "&".join(["{0}={1}".format(k, urllib.parse.quote(v)) for k, v in params.items()])
     res = templates.TemplateResponse("auth/index.html", {"request": request, "url": url, "setting": setting})
     return res
 
 def token_updated(data: dict) -> None:
-    print("refresh")
-    pprint.pprint(data)
     user = db.session.query(User).filter(User.fitbit_id==data['user_id']).first()
     if not user:
         user = User(data)
