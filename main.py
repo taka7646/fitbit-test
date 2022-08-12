@@ -123,6 +123,24 @@ def heart_rate(request: Request, date: str = Query(None)):
     data_set = data["activities-heart-intraday"]["dataset"]
     return templates.TemplateResponse("heart_rate.html", {"request": request, "user": user, "data_set":data_set, "date":date, "dates":dates})
 
+@app.get("/steps", response_class=HTMLResponse)
+def all(request: Request, date: str = Query(None)):
+    user = get_login_user(request)
+    if user is None:
+        return RedirectResponse("/auth")
+    today = datetime.date.today()
+    if date is None:
+        date = today.isoformat()
+    dates = []
+    for i in range(0, 7):
+        d = today - datetime.timedelta(days=i)
+        dates.append(d.isoformat())
+    f = fitbit.Fitbit(setting['client_id'], setting['client_secret'], access_token=user.access_token, refresh_token=user.refresh_token, expires_at=user.expires_at, refresh_cb=token_updated)
+    data = f.intraday_time_series('activities/steps', date, detail_level='15min')
+    data_set = data["activities-steps-intraday"]["dataset"]
+    return templates.TemplateResponse("steps.html", {"request": request, "user": user, "data_set":data_set, "date":date, "dates":dates})
+
+
 # web api
 @app.get("/api/heart-rate", response_class=JSONResponse)
 def api_heart_rate(request: Request, date: str = Query(None), x_api_key: Union[str, None] = Header(default=None)):
@@ -136,4 +154,18 @@ def api_heart_rate(request: Request, date: str = Query(None), x_api_key: Union[s
     f = fitbit.Fitbit(setting['client_id'], setting['client_secret'], access_token=user.access_token, refresh_token=user.refresh_token, expires_at=user.expires_at, refresh_cb=token_updated)
     data = f.intraday_time_series('activities/heart', date, detail_level='15min')
     data_set = data["activities-heart-intraday"]["dataset"]
+    return JSONResponse(jsonable_encoder(data_set))
+
+@app.get("/api/steps", response_class=JSONResponse)
+def api_heart_rate(request: Request, date: str = Query(None), x_api_key: Union[str, None] = Header(default=None)):
+    if x_api_key is not None:
+        user = db.session.query(User).filter(User.api_key==x_api_key).first()
+    if user is None:
+        return RedirectResponse("/auth")
+    today = datetime.date.today()
+    if date is None:
+        date = today.isoformat()
+    f = fitbit.Fitbit(setting['client_id'], setting['client_secret'], access_token=user.access_token, refresh_token=user.refresh_token, expires_at=user.expires_at, refresh_cb=token_updated)
+    data = f.intraday_time_series('activities/steps', date, detail_level='15min')
+    data_set = data["activities-steps-intraday"]["dataset"]
     return JSONResponse(jsonable_encoder(data_set))
