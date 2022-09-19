@@ -11,7 +11,7 @@ fitbitのAPIをproxyするWebアプリのサンプル実装です
 * sqlalchemy
 * gunicorn
 ```
-pip install -r requiments.txt
+pip install -r requirements.txt
 ```
 
 ## 初期化

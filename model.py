@@ -45,6 +45,6 @@ class User(Base):
         self.session_id = secrets.token_urlsafe(16)
 
     def __str__(self) -> str:
-        return "id: {0}, fitbit_id: {1}".format(self.id, self.fitbit_id)
+        return "id: {0}, fitbit_id: {1}, api_key:{2}".format(self.id, self.fitbit_id, self.api_key)
 
 
